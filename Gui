@@ -1,0 +1,91 @@
+from tkinter import *
+from PIL import ImageTk, Image
+# import the python extensions
+root = Tk()
+root.title('SCOOBY BOARD')
+root.geometry('{}x{}'.format(800, 800))
+# formatting
+
+# create all of the main containers
+top_frame = Frame(root, bg='gray2', width=450, height=100, pady=3)
+center = Frame(root, bg='gray2', width=50, height=40, padx=3, pady=3)
+btm_frame = Frame(root, bg='red', width=450, height=200, pady=3)
+
+# layout all of the main containers
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
+
+top_frame.grid(row=0, sticky="ew")
+center.grid(row=1, sticky="nsew")
+btm_frame.grid(row=2, sticky="ew")
+
+# create the widgets for the top frame
+#poway_label = Label(top_frame, text='Poway Polo', bg='cyan',font=("Arial",50))
+#poway_label.config(justify=LEFT)
+#poway_label.pack()
+
+image = Image.open("poway2.png")
+image=image.resize((150,150),Image.ANTIALIAS)
+my_img = ImageTk.PhotoImage(image)
+
+poway_logo = Label(top_frame,image=my_img)
+poway_logo.pack()
+
+
+# create the center widgets
+center.grid_rowconfigure(0, weight=1)
+center.grid_columnconfigure(1, weight=1)
+
+ctr_left = Frame(center, bg='blue', width=300, height=50)
+ctr_mid = Frame(center, bg='grey',width=200,height = 50)
+ctr_right = Frame(center, bg='green', width=300, height=50, padx=3, pady=3)
+
+ctr_left.grid(row=0, column=0, sticky="ns")
+ctr_mid.grid(row=0,column=1, sticky="nsew")
+ctr_right.grid(row=0, column=2, sticky="ns")
+
+# prevent center frame from changing the size to fit the content
+ctr_left.pack_propagate(0)
+ctr_mid.pack_propagate(0)
+ctr_right.pack_propagate(0)
+
+
+home_label = Label(ctr_left, text='HOME', bg='blue',font=("Arial",50))
+home_label.config(anchor=CENTER)
+home_label.pack()
+
+home_score_label = Label(ctr_left, text='00', bg='blue',font=("Arial",150))
+home_score_label.config(anchor=CENTER)
+home_score_label.pack()
+
+time_label = Label(ctr_mid, text='TIME', bg='grey',font=("Arial",50))
+time_label.config(anchor=CENTER)
+time_label.pack()
+
+game_time_label = Label(ctr_mid, text='4:23', bg='grey',font=("Arial",50),pady=50)
+game_time_label.config(anchor=CENTER)
+game_time_label.pack()
+
+quarter_label = Label(ctr_mid, text='3rd', bg='grey',font=("Arial",50),pady=10)
+quarter_label.config(anchor=CENTER)
+quarter_label.pack()
+
+
+visitor_label = Label(ctr_right, text='VISITOR', bg='green',font=("Arial",50))
+visitor_label.config(anchor=CENTER)
+visitor_label.pack()
+
+visitor_score_label = Label(ctr_right, text='00', bg='green',font=("Arial",150))
+visitor_score_label.config(anchor=CENTER)
+visitor_score_label.pack()
+
+# prevent bottom frame from changing the size to fit the content
+btm_frame.pack_propagate(0)
+
+# bottom frame widget
+
+sponsor_label = Label(btm_frame, text='Sponsor', bg='red',font=("Arial",20))
+sponsor_label.config(anchor="ne")
+sponsor_label.pack()
+
+root.mainloop()
