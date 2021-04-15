@@ -8,15 +8,16 @@ class Page(tk.Frame):
 class Page1(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 1")
-       label.pack(side="top", fill="both", expand=True)
+
+       test_label = tk.Label(self, text='HOME TEAM NAME', bg='blue', font=("Arial", 50))
+       test_label.pack(side="top",fill="both", expand=True)
+
+       test_label2 = tk.Label(self, text='OPPONENT TEAM NAME', bg='green', font=("Arial",50))
+       test_label2.pack(side="top", fill="both", expand=True)
 
 class Page2(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 2")
-       label.pack(side="top", fill="both", expand=True)
-
        home_label = tk.Label(self, text='HOME', bg='blue', font=("Arial",50))
        home_label.pack(side="top", fill="both", expand=True)
 
@@ -63,5 +64,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("400x400")
+    root.wm_geometry("800x800")
     root.mainloop()
