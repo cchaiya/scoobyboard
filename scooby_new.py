@@ -65,12 +65,12 @@ class Page2(Page):
        poway_logo.pack()
 
        home_label = tk.Label(self, text='HOME', bg='blue', font=("Arial",50))
-       home_label.pack(side="top", fill="x", expand=True)
+       home_label.pack(side="top", fill="both", expand=True)
 
        home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",50))
-       home_score_label.pack(side="top", fill="x", expand=True)
+       home_score_label.pack(side="top", fill="both", expand=True)
 
-       time_label = tk.Label(self, text="Time", bg='blue', font=("Arial",50))
+       time_label = tk.Label(self, text="Time", bg='grey', font=("Arial",50))
        time_label.pack(side="top", fill="both", expand =True)
 
        game_time_label = tk.Label(self, text='4:23', bg='grey', font=("Arial",50))
@@ -80,10 +80,10 @@ class Page2(Page):
        quarter_label.pack(side="top", fill="both", expand =True)
 
        visitor_label = tk.Label(self, text='Visitor', bg='green', font=("Arial", 50))
-       visitor_label.pack(side="top", fill="y", expand=True)
+       visitor_label.pack(side="top", fill="both", expand=True)
 
        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 50))
-       visitor_score_label.pack(side="top", fill="y", expand=True)
+       visitor_score_label.pack(side="top", fill="both", expand=True)
 
        self.key = tk.Entry()
        self.key.pack(side="bottom", fill="both", expand=False)
