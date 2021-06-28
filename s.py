@@ -37,10 +37,10 @@ class Page1(Page):
 
        self.entries = []
        field = "Home TEAM NAME"
-       entries.append(LabelEntry(self, field))
+       self.entries.append(LabelEntry(self, field))
 
        field = "Visitor TEAM NAME"
-       entries.append(LabelEntry(self, field))
+       self.entries.append(LabelEntry(self, field))
 
 
 #       for field in 'Version', 'Database Name', 'CSV File':
