@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-
+from functools import partial
 
 class LabelEntry(tk.Frame):
     def __init__(self, parent, text, button=None):
@@ -21,6 +21,8 @@ class LabelEntry(tk.Frame):
         else:
             entry = tk.Entry(self)
             entry.pack(side=tk.LEFT, fill=tk.X, padx=5)
+
+        self.entry=entry
 
 
 class Page(tk.Frame):
@@ -92,6 +94,8 @@ class Page2(Page):
        self.fin2.set("0")
        self.score1 = 0
        self.score2 = 0
+       self.home_name = tk.StringVar()
+       self.visitor_name =tk.StringVar()
 
 
        image = Image.open("poway2.png")
@@ -101,13 +105,13 @@ class Page2(Page):
        poway_logo.pack(side="top", fill="both", expand=True)
 
 
-       home_label = tk.Label(self, text='HOME', bg='blue', font=("Arial",50))
+       home_label = tk.Label(self, textvariable=self.home_name, bg='blue', font=("Arial",50))
        home_label.pack(side="top", fill="both", expand=True)
 
        home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",50))
        home_score_label.pack(side="top", fill="both", expand=True)
 
-       time_label = tk.Label(self, text="Time", bg='blue', font=("Arial",50))
+       time_label = tk.Label(self, text="Time", bg='grey', font=("Arial",50))
        time_label.pack(side="top", fill="both", expand =True)
 
        game_time_label = tk.Label(self, text='4:23', bg='grey', font=("Arial",50))
@@ -116,7 +120,7 @@ class Page2(Page):
        quarter_label = tk.Label(self, text='3rd', bg='grey', font=("Arial",50))
        quarter_label.pack(side="top", fill="both", expand =True)
 
-       visitor_label = tk.Label(self, text='Visitor', bg='green', font=("Arial", 50))
+       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 50))
        visitor_label.pack(side="top", fill="both", expand=True)
 
        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 50))
@@ -128,11 +132,20 @@ class Page2(Page):
        myButton = tk.Button(self, text=" ", command=self.myClick)
        myButton.pack(side="top", fill="both", expand=True)
 
+   def my_lift(self,p1):
+       print("here")
+       s = p1.entries[1].entry.get()
+       print("entry0 %s"%s)
+       self.visitor_name.set(str(s))
+       a = p1.entries[0].entry.get()
+       self.home_name.set(str(a))
+
+       self.lift()
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
         p1 = Page1(self)
-        p2 = Page2(self)
+        p2 = Page2(self,p1)
 
 
         buttonframe = tk.Frame(self)
@@ -144,8 +157,7 @@ class MainView(tk.Frame):
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)        
 
         b1 = tk.Button(buttonframe, text="Page 1", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Page 2", command=p2.lift)        
-
+        b2 = tk.Button(buttonframe, text="Page 2", command=partial(p2.my_lift,p1))
         b1.pack(side="left")
         b2.pack(side="left")        
 
