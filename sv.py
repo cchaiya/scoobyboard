@@ -30,47 +30,59 @@ class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
     def show(self):
-        self.lift()
+        self.myLift()
 
 
 class Page1(Page):
-   def __init__(self, *args, **kwargs):
-       Page.__init__(self, *args, **kwargs)
+    def myLift(self):
+        self.bind_all('<Return>',lambda event: self.keyEnterPressed())
+        self.focus_set()
+        self.lift()
+
+    def keyEnterPressed(self):
+        print ("Page1 Return key pressed")
+        self.page2.myLift(self)
+
+    def setPage2(self, p2):
+        self.page2 = p2;
+       
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+
+        self.root = args[0]
+
+        self.entries = []
+        field = "Home TEAM NAME"
+        self.entries.append(LabelEntry(self, field))
+ 
+        field = "Visitor TEAM NAME"
+        self.entries.append(LabelEntry(self, field))
+ 
+        field = "Quarter"
+        self.entries.append(LabelEntry(self, field))
+ 
+        field = "Timer (Minutes)"
+        self.entries.append(LabelEntry(self, field))
+ 
+        field = "Timer(Seconds)"
+        self.entries.append(LabelEntry(self,field))
 
 
-       self.entries = []
-       field = "Home TEAM NAME"
-       self.entries.append(LabelEntry(self, field))
+        self.bind_all('<Return>',lambda event: self.keyEnterPressed())
+        self.focus_set()
 
-       field = "Visitor TEAM NAME"
-       self.entries.append(LabelEntry(self, field))
-
-       field = "Quarter"
-       self.entries.append(LabelEntry(self, field))
-
-       field = "Timer (Minutes)"
-       self.entries.append(LabelEntry(self, field))
-
-       field = "Timer(Seconds)"
-       self.entries.append(LabelEntry(self,field))
-
-
-
-#       for field in 'Version', 'Database Name', 'CSV File':
-#           if field == 'CSV File':
-#               button = tk.Button(text="Browse", command=self.callback)
-#               entries.append(LabelEntry(frame, field, button))
-#           else:
-#               entries.append(LabelEntry(frame, field))
-
-#       test_label = tk.Label(self, text='HOME TEAM NAME', bg='blue', font=("Arial", 50))
-#       test_label.pack(side="top",fill="both", expand=True)
-#
-#       test_label2 = tk.Label(self, text='OPPONENT TEAM NAME', bg='green', font=("Arial",50))
-#       test_label2.pack(side="top", fill="both", expand=True)
-#
 
 class Page2(Page):
+
+    def keyEnterPressed(self):
+        print ("Page2 Return key pressed")
+        self.page1.myLift()
+
+    def keyWPressed(self):
+        print ("Page2 W key pressed")
+
+    def setPage1(self, p1):
+        self.page1 = p1;
 
     def initCounter (self):
 
@@ -130,14 +142,12 @@ class Page2(Page):
         else:
            print("5")
 
-    def setRoot(self,r):
-        self.root = r
 
     def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
 
 
-       # self.root = kwargs[1]
+       self.root = args[0]
        self.fin = tk.StringVar()
        self.fin2 = tk.StringVar()
 
@@ -192,10 +202,14 @@ class Page2(Page):
        myButton = tk.Button(self, text=" ", command=self.myClick)
        myButton.grid(row=3, column=1, sticky="nsew", pady=3)
 
+       self.bind_all('<Return>',lambda event: self.keyEnterPressed())
+       self.bind_all('<w>',lambda event: self.keyWPressed())
+       self.focus_set()
+
        self.initCounter()
 
 
-    def my_lift(self,p1):
+    def myLift(self,p1):
         print("here")
         s = p1.entries[1].entry.get()
         print("entry0 %s"%s)
@@ -206,18 +220,22 @@ class Page2(Page):
 
         d = p1.entries[2].entry.get()
         self.quarter_time.set(str(d))
-
         
-        z = p1.entries[3].entry.get()
-        self.timer_min=int(z)
+        m = p1.entries[3].entry.get()
+        self.timer_min=int(m)
 
-        y = p1.entries[4].entry.get()
-        self.timer_sec= int(y)
+        s = p1.entries[4].entry.get()
+        self.timer_sec= int(s)
 
+        print ("Min(%s) Sec(%s)"%(m,s))
+        
         self.timer_count= self.timer_min*60 +self.timer_sec 
 
-        strx = z + ":" + y
+        strx = m + ":" + s
         self.timer.set(str(strx))
+
+        self.bind_all('<Return>',lambda event: self.keyEnterPressed())
+        self.focus_set()
        
         self.lift()
 
@@ -225,30 +243,18 @@ class Page2(Page):
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
+
         p1 = Page1(self)
         p2 = Page2(self)
-        #p2 = Page2(self)
-        p2.setRoot(args[0])
 
+        p1.setPage2(p2)
+        p2.setPage1(p1)
 
-        buttonframe = tk.Frame(self)
         container = tk.Frame(self)
-        buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
 
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)        
-
-        b1 = tk.Button(buttonframe, text="Page 1", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Page 2", command=partial(p2.my_lift,p1))
-        b1.pack(side="left")
-        b2.pack(side="left")        
-
-        image = Image.open("poway1.png")
-        image=image.resize((150,150), Image.ANTIALIAS)
-        my_img = ImageTk.PhotoImage(image)
-        poway_logo = tk.Label(buttonframe,image=my_img)
-        poway_logo.pack(side="top", fill="both", expand=True)
 
         p1.show()
 
