@@ -43,15 +43,8 @@ class Page1(Page):
        field = "Visitor TEAM NAME"
        self.entries.append(LabelEntry(self, field))
 
-       field = "Quarter"
+      # field = "Quarter"
        self.entries.append(LabelEntry(self, field))
-
-       field = "Timer (Minutes)"
-       self.entries.append(LabelEntry(self, field))
-
-       field = "Timer(Seconds)"
-       self.entries.append(LabelEntry(self,field))
-
 
 
 #       for field in 'Version', 'Database Name', 'CSV File':
@@ -106,44 +99,42 @@ class Page2(Page):
        self.home_name = tk.StringVar()
        self.visitor_name =tk.StringVar()
        self.quarter_time = tk.StringVar()
-       self.timer = tk.StringVar()
 
+       """
        image = Image.open("poway2.png")
        image=image.resize((150,150), Image.ANTIALIAS)
        self.my_img = ImageTk.PhotoImage(image)
        poway_logo = tk.Label(self,image=self.my_img)
-       poway_logo.grid(row=0, column = 1, sticky ="ew", pady =2)
+       poway_logo.pack(side="top", fill="both", expand=True)
 
 
        home_label = tk.Label(self, textvariable=self.home_name, bg='blue', font=("Arial",50))
-       home_label.grid(row=0, column= 0, sticky ="nsew", pady=2)
-
-
-       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 50))
-       visitor_label.grid(row=0, column=2, sticky="nsew", pady=3)
+       home_label.pack(side="top", fill="both", expand=True)
 
        home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",50))
-       home_score_label.grid(row=1, column=0, sticky="nsew", pady=3)
+       home_score_label.pack(side="top", fill="both", expand=True)
 
-       time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",50))
-       time_label.grid(row=1, column=1, sticky="ew", pady=3)
+       time_label = tk.Label(self, text="Time", bg='grey', font=("Arial",50))
+       time_label.pack(side="top", fill="both", expand =True)
+
+       game_time_label = tk.Label(self, text='4:23', bg='grey', font=("Arial",50))
+       game_time_label.pack(side="top", fill="both", expand =True)
+
+       quarter_label = tk.Label(self, textvariable = "self.quarter_time", bg='grey', font=("Arial",50))
+       quarter_label.pack(side="top", fill="both", expand =True)
+
+       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 50))
+       visitor_label.pack(side="top", fill="both", expand=True)
 
        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 50))
-       visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=3)
+       visitor_score_label.pack(side="top", fill="both", expand=True)
+       """
 
-       game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",50))
-       game_time_label.grid(row=2, column=1, sticky="ew", pady=3)
-
-       quarter_label = tk.Label(self, textvariable = self.quarter_time, bg='grey', font=("Arial",50))
-       quarter_label.grid(row=2, column=1, sticky="ew", pady=3)
-
-
-
-       self.key =tk.Entry(self, width=10)
-       self.key.grid(row=3, column=0, sticky="nsew", pady=3)
+       self.key = tk.Entry()
+       self.key.pack(side="bottom", fill="both", expand=False)
 
        myButton = tk.Button(self, text=" ", command=self.myClick)
-       myButton.grid(row=3, column=1, sticky="nsew", pady=3)
+       myButton.pack(side="top", fill="both", expand=True)
 
    def my_lift(self,p1):
        print("here")
@@ -154,52 +145,8 @@ class Page2(Page):
        self.home_name.set(str(a))
        d = p1.entries[2].entry.get()
        self.quarter_time.set(str(d))
-       z = p1.entries[3].entry.get()
-       y = p1.entries[4].entry.get()
-       print("%s : %s",z+y)
-       strx = z + ":" + y
-       self.timer.set(str(strx))
-       print(strx)
-       print(d)
-       
-
-
 
        self.lift()
-   def _init_(self, root, init_min, init_sec, p1):
-       self.root =root
-       self.min= IntVar()
-       init_min.set(p1.entries[3].entry.get())
-       init_sec.set(p1.entries[4].entry.get())
-       self.min.set(init_min)
-       self.sec = IntVar()
-       self.sec.set(init_sec)
-       self.is_running=False
-       self.count=IntVar()
-       self.count.set(init_min*60+init_sec)
-
-
-
-   def startit(self,p1):
-       if not self.is_running:
-          self. is_running=True
-          count.set( p1.entries[3].get * 60 + p1.entries[4].get())
-          self.decrement_counter()
-   def decrement_counter(self,p1):
-       if self.is_running:
-          c=self.count.get() -1
-          p1.count.set(c)
-          if c>0:
-             self.root.after(1000, self.decrement_counter)
-          else:
-             self.is_running=False
-          m, s = divmod(c,60)
-          self.min.set(m)
-          self.sec.set(s)
-   def pauseit(self, p1):
-        p1.is_running = False
-
-
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
