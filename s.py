@@ -1,6 +1,9 @@
+import keyboard
 import tkinter as tk
 from PIL import Image, ImageTk
 from functools import partial
+
+
 class LabelEntry(tk.Frame):
     def __init__(self, parent, text, button=None):
         super().__init__(parent)
@@ -69,7 +72,41 @@ class Page1(Page):
 #
 
 class Page2(Page):
-   def myClick(self):
+
+    def initCounter (self):
+
+        # clock start stop.. use button for now ... when Chloe is done with
+        # key press it should be control by key press
+        startButton = tk.Button(self, text="start", command=self.startCounter)
+        startButton.grid(row=4, column=0, sticky="nsew", pady=3)
+        pauseButton = tk.Button(self, text="pause", command=self.pauseCounter)
+        pauseButton.grid(row=4, column=1, sticky="nsew", pady=3)
+
+    def startCounter(self):
+        if not self.is_timer_running:  ## avoid 2 button pushes
+            self.is_timer_running=True
+            self.decrementCounter()
+
+    def decrementCounter(self):
+        if self.is_timer_running:
+             self.timer_count = int(self.timer_count) -1
+
+             if self.timer_count > 0:  ## time is not up
+                 self.root.after(1000, self.decrementCounter)  ## every second
+             else:     ## time is up so exit
+                 self.is_timer_running=False
+                 print ("TIMES UP!")
+
+             #convert count into min and second
+             m, s = divmod(self.timer_count,60)
+             print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
+             strx = str(m) + ":" + str(s)
+             self.timer.set(str(strx))
+
+    def pauseCounter(self):
+        self.is_timer_running = False
+
+    def myClick(self):
         inputkey = self.key.get()
         print("1" + inputkey)
         if inputkey=="w":
@@ -93,9 +130,15 @@ class Page2(Page):
            quit()
         else:
            print("5")
-   def __init__(self, *args, **kwargs):
+
+    def setRoot(self,r):
+        self.root = r
+
+    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
 
+
+       # self.root = kwargs[1]
        self.fin = tk.StringVar()
        self.fin2 = tk.StringVar()
 
@@ -107,35 +150,40 @@ class Page2(Page):
        self.visitor_name =tk.StringVar()
        self.quarter_time = tk.StringVar()
        self.timer = tk.StringVar()
+       self.timer_min = 0
+       self.timer_sec = 0 
+       self.timer_count= 0
+
+       self.is_timer_running=False  ## timer is or is not running
 
        image = Image.open("poway2.png")
-       image=image.resize((150,150), Image.ANTIALIAS)
+       image=image.resize((200,200), Image.ANTIALIAS)
        self.my_img = ImageTk.PhotoImage(image)
        poway_logo = tk.Label(self,image=self.my_img)
-       poway_logo.grid(row=0, column = 1, sticky ="ew", pady =2)
+       poway_logo.grid(row=0, column = 1, sticky ="ew", pady =4)
 
 
-       home_label = tk.Label(self, textvariable=self.home_name, bg='blue', font=("Arial",50))
-       home_label.grid(row=0, column= 0, sticky ="nsew", pady=2)
+       home_label = tk.Label(self, textvariable=self.home_name, bg='blue', font=("Arial",100))
+       home_label.grid(row=0, column= 0, sticky ="nsew", pady=8)
 
 
-       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 50))
-       visitor_label.grid(row=0, column=2, sticky="nsew", pady=3)
+       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 100))
+       visitor_label.grid(row=0, column=2, sticky="nsew", pady=8)
 
-       home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",50))
-       home_score_label.grid(row=1, column=0, sticky="nsew", pady=3)
+       home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",200))
+       home_score_label.grid(row=1, column=0, sticky="nsew", pady=10)
 
-       time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",50))
-       time_label.grid(row=1, column=1, sticky="ew", pady=3)
+       time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",100))
+       time_label.grid(row=1, column=1, sticky="ew", pady=8)
 
-       visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 50))
-       visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=3)
+       visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 200))
+       visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=10)
 
-       game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",50))
-       game_time_label.grid(row=2, column=1, sticky="ew", pady=3)
+       game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
+       game_time_label.grid(row=2, column=1, sticky="ew", pady=8)
 
-       quarter_label = tk.Label(self, textvariable = self.quarter_time, bg='grey', font=("Arial",50))
-       quarter_label.grid(row=2, column=1, sticky="ew", pady=3)
+       quarter_label = tk.Label(self, textvariable = self.quarter_time, bg='grey', font=("Arial",100))
+       quarter_label.grid(row=2, column=1, sticky="ew", pady=8)
 
 
 
@@ -145,66 +193,44 @@ class Page2(Page):
        myButton = tk.Button(self, text=" ", command=self.myClick)
        myButton.grid(row=3, column=1, sticky="nsew", pady=3)
 
-   def my_lift(self,p1):
-       print("here")
-       s = p1.entries[1].entry.get()
-       print("entry0 %s"%s)
-       self.visitor_name.set(str(s))
-       a = p1.entries[0].entry.get()
-       self.home_name.set(str(a))
-       d = p1.entries[2].entry.get()
-       self.quarter_time.set(str(d))
-       z = p1.entries[3].entry.get()
-       y = p1.entries[4].entry.get()
-       print("%s : %s",z+y)
-       strx = z + ":" + y
-       self.timer.set(str(strx))
-       print(strx)
-       print(d)
-       
+       self.initCounter()
+
+
+    def my_lift(self,p1):
+        print("here")
+        s = p1.entries[1].entry.get()
+        print("entry0 %s"%s)
+        self.visitor_name.set(str(s))
+
+        a = p1.entries[0].entry.get()
+        self.home_name.set(str(a))
+
+        d = p1.entries[2].entry.get()
+        self.quarter_time.set(str(d))
 
 
 
-       self.lift()
-   def _init_(self, root, init_min, init_sec, p1):
-       self.root =root
-       self.min= IntVar()
-       init_min.set(p1.entries[3].entry.get())
-       init_sec.set(p1.entries[4].entry.get())
-       self.min.set(init_min)
-       self.sec = IntVar()
-       self.sec.set(init_sec)
-       self.is_running=False
-       self.count=IntVar()
-       self.count.set(init_min*60+init_sec)
+        z = p1.entries[3].entry.get()
+        self.timer_min=int(z)
 
+        y = p1.entries[4].entry.get()
+        self.timer_sec= int(y)
 
+        self.timer_count= self.timer_min*60 +self.timer_sec
 
-   def startit(self,p1):
-       if not self.is_running:
-          self. is_running=True
-          count.set( p1.entries[3].get * 60 + p1.entries[4].get())
-          self.decrement_counter()
-   def decrement_counter(self,p1):
-       if self.is_running:
-          c=self.count.get() -1
-          p1.count.set(c)
-          if c>0:
-             self.root.after(1000, self.decrement_counter)
-          else:
-             self.is_running=False
-          m, s = divmod(c,60)
-          self.min.set(m)
-          self.sec.set(s)
-   def pauseit(self, p1):
-        p1.is_running = False
+        strx = z + ":" + y
+        self.timer.set(str(strx))
+
+        self.lift()
 
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
         p1 = Page1(self)
-        p2 = Page2(self,p1)
+        p2 = Page2(self)
+        #p2 = Page2(self)
+        p2.setRoot(args[0])
 
 
         buttonframe = tk.Frame(self)
@@ -230,7 +256,9 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    width = root.winfo_screenwidth()
+    height= root.winfo_screenheight()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("800x800")
+    root.wm_geometry("%dx%d" % (width, height))
     root.mainloop()

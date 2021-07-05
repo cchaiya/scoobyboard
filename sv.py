@@ -42,6 +42,9 @@ class Page1(Page):
     def keyEnterPressed(self):
         print ("Page1 Return key pressed")
         self.page2.myLift(self)
+    def keyQPressed(self):
+        print ("Page1 Q pressed")
+        quit()
 
     def setPage2(self, p2):
         self.page2 = p2;
@@ -67,7 +70,7 @@ class Page1(Page):
         field = "Timer(Seconds)"
         self.entries.append(LabelEntry(self,field))
 
-
+        self.bind_all('<q>', lambda event: self.keyQPressed()) 
         self.bind_all('<Return>',lambda event: self.keyEnterPressed())
         self.focus_set()
 
@@ -77,21 +80,34 @@ class Page2(Page):
     def keyEnterPressed(self):
         print ("Page2 Return key pressed")
         self.page1.myLift()
-
     def keyWPressed(self):
         print ("Page2 W key pressed")
-
+        self.score1 += 1
+        self.fin.set(str(self.score1))
+    def keySPressed(self):
+        print ("Page2 S pressed")
+        self.score1 -= 1
+        self.fin.set(str(self.score1))
+    def keyIPressed(self):
+        print ("Page 2 I pressed")
+        self.score2 += 1
+        self.fin2.set(str(self.score2))
+    def keyKPressed(self):
+        print ("Page 2 K Pressed")
+        self.score2 -= 1
+        self.fin2.set(str(self.score2))
+    def keyQPressed(self):
+        print ("quit p2")
+        quit()
+    def keyTPressed(self):
+        print ("start timer")
+        self.startCounter()
+    def keyEPressed(self):
+        print ("stop timer")
+        self.pauseCounter()
     def setPage1(self, p1):
         self.page1 = p1;
 
-    def initCounter (self):
-
-        # clock start stop.. use button for now ... when Chloe is done with
-        # key press it should be control by key press
-        startButton = tk.Button(self, text="start", command=self.startCounter)
-        startButton.grid(row=4, column=0, sticky="nsew", pady=3)
-        pauseButton = tk.Button(self, text="pause", command=self.pauseCounter)
-        pauseButton.grid(row=4, column=1, sticky="nsew", pady=3)
 
     def startCounter(self):
         if not self.is_timer_running:  ## avoid 2 button pushes
@@ -117,31 +133,6 @@ class Page2(Page):
     def pauseCounter(self):
         self.is_timer_running = False
 
-    def myClick(self):
-        inputkey = self.key.get()
-        print("1" + inputkey)
-        if inputkey=="w":
-           print("3")
-           self.score1 += 1
-           self.fin.set(str(self.score1))
-        elif inputkey=="s":
-           print("4")
-           self.score1 -= 1
-           self.fin.set(str(self.score1))
-        elif inputkey =="i":
-           print("6")
-           self.score2 += 1
-           self.fin2.set(str(self.score2))
-        elif inputkey =="k":
-           print("7")
-           self.score2 -= 1
-           self.fin2.set(str(self.score2))
-        elif inputkey=="q":
-           print("quit")
-           quit()
-        else:
-           print("5")
-
 
     def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
@@ -166,47 +157,49 @@ class Page2(Page):
        self.is_timer_running=False  ## timer is or is not running
 
        image = Image.open("poway2.png")
-       image=image.resize((150,150), Image.ANTIALIAS)
+       image=image.resize((300,300), Image.ANTIALIAS)
        self.my_img = ImageTk.PhotoImage(image)
        poway_logo = tk.Label(self,image=self.my_img)
-       poway_logo.grid(row=0, column = 1, sticky ="ew", pady =2)
+       poway_logo.grid(row=0, column = 1, sticky ="ew", pady =4)
 
 
-       home_label = tk.Label(self, textvariable=self.home_name, bg='blue', font=("Arial",50))
-       home_label.grid(row=0, column= 0, sticky ="nsew", pady=2)
+       home_label = tk.Label(self, textvariable=self.home_name, bg='blue', width= 15, height=2, font=("Arial",50))
+       home_label.grid(row=0, column= 0, sticky ="nsew", pady=8)
 
 
-       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green', font=("Arial", 50))
-       visitor_label.grid(row=0, column=2, sticky="nsew", pady=3)
+       visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green',width= 15, height=2, font=("Arial", 50))
+#       visitor_label.grid(row=0, column=2, pady=8)
+       visitor_label.grid(row=0, column=2, sticky="nsew", pady=8)
 
-       home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', font=("Arial",50))
-       home_score_label.grid(row=1, column=0, sticky="nsew", pady=3)
+       home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', height=2,  font=("Arial",200))
+       home_score_label.grid(row=1, column=0, sticky="nsew", pady=10)
 
-       time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",50))
-       time_label.grid(row=1, column=1, sticky="ew", pady=3)
+       time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",100))
+       time_label.grid(row=1, column=1, sticky="ew", pady=8)
 
-       visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green', font=("Arial", 50))
-       visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=3)
+       visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green',height=2,  font=("Arial", 200))
+       visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=10)
 
-       game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",50))
-       game_time_label.grid(row=2, column=1, sticky="ew", pady=3)
+       game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
+       game_time_label.grid(row=2, column=1, sticky="ew", pady=8)
 
-       quarter_label = tk.Label(self, textvariable = self.quarter_time, bg='grey', font=("Arial",50))
-       quarter_label.grid(row=2, column=1, sticky="ew", pady=3)
+       quarter_label = tk.Label(self, textvariable = self.quarter_time, bg='grey', font=("Arial",100))
+       quarter_label.grid(row=2, column=1, sticky="ew", pady=8)
 
 
 
-       self.key =tk.Entry(self, width=10)
-       self.key.grid(row=3, column=0, sticky="nsew", pady=3)
-
-       myButton = tk.Button(self, text=" ", command=self.myClick)
-       myButton.grid(row=3, column=1, sticky="nsew", pady=3)
 
        self.bind_all('<Return>',lambda event: self.keyEnterPressed())
        self.bind_all('<w>',lambda event: self.keyWPressed())
+       self.bind_all('<s>', lambda event: self.keySPressed())
+       self.bind_all('<i>', lambda event: self.keyIPressed())
+       self.bind_all('<k>', lambda event: self.keyKPressed())
+       self.bind_all('<q>', lambda event: self.keyQPressed())
+       self.bind_all('<t>', lambda event: self.keyTPressed())
+       self.bind_all('<e>', lambda event: self.keyEPressed())
        self.focus_set()
 
-       self.initCounter()
+
 
 
     def myLift(self,p1):
@@ -222,10 +215,12 @@ class Page2(Page):
         self.quarter_time.set(str(d))
         
         m = p1.entries[3].entry.get()
-        self.timer_min=int(m)
+        if (m==""): self.timer_min = 0
+        else: self.timer_min=int(m)
 
         s = p1.entries[4].entry.get()
-        self.timer_sec= int(s)
+        if (s==""): self.timer_sec = 0
+        else:self.timer_sec= int(s)
 
         print ("Min(%s) Sec(%s)"%(m,s))
         
@@ -260,7 +255,9 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    width = root.winfo_screenwidth()
+    height =  root.winfo_screenheight()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("800x800")
+    root.wm_geometry('%dx%d'%(width,height))
     root.mainloop()
