@@ -13,12 +13,23 @@ INIT_CHUKKER = 1
 INIT_MIN_IN_A_CHUKKER = 7
 INIT_SEC_IN_A_CHUKKER = 30 
 
+
+GREETING_BANNER = """\n
+Scoobyboard V0.9\n
+git@github.com:cchaiya/scoobyboard.git\n
+"""
+
+SHUTDOWN_BANNER= """Are you sure you want to shutdown ?\n
+Yes: enter <return>
+No : enter <ESC>
+"""
+
 class LabelEntry(tk.Frame):
 
     def onlyNumbers(self, char):
         return char.isdigit()
 
-    def __init__(self, parent, text, button=None, validate_num=False):
+    def __init__(self, parent, text, button=None, label=True,validate_num=False):
         super().__init__(parent)
         self.pack(fill=tk.X)
 
@@ -33,7 +44,7 @@ class LabelEntry(tk.Frame):
             entry.pack(side=tk.LEFT, fill=tk.X, padx=5)
 
             button.pack(in_=frame2, side=tk.LEFT, padx=5, pady=5)
-        else:
+        elif label:
 
             if (validate_num):
                 vcmd = self.register(self.onlyNumbers)
@@ -42,10 +53,49 @@ class LabelEntry(tk.Frame):
             else: entry = tk.Entry(self)
             entry.pack(side=tk.LEFT, fill=tk.X, padx=5)
 
-        self.entry=entry
+            self.entry=entry
 
 
 class Page(tk.Frame):
+
+    def _popupDestroy(self,event):
+        self.quitPopup.destroy()
+
+    def _popupQuit(self,event):
+        quit()
+
+    def quitPopUp(self):
+        self.quitPopup = tk.Tk()
+        self.quitPopup.title("Quit")
+        label= tk.Label(self.quitPopup, text=SHUTDOWN_BANNER,font=("Arial",50),
+                    bg='#f00', fg='#fff')
+        label.pack(side="top", fill="x", pady=10)
+
+        self.quitPopup.bind ('<Return>',self._popupQuit)
+        self.quitPopup.bind ('<Escape>',self._popupDestroy)
+        self.quitPopup.mainloop()
+
+
+    def decrementCounter(self):
+        if self.is_timer_running:
+             self.timer_count = int(self.timer_count) -1
+
+             if self.timer_count > 0:  ## time is not up
+                self.root.after(1000, self.decrementCounter)  ## every second
+
+             #convert count into min and second
+             m, s = divmod(self.timer_count,60)
+             print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
+             strx = str(m) + ":" + str(s)
+             self.timer.set(str(strx))
+
+             if (self.timer_count ==0) :     ## time is up so exit
+                self.is_timer_running=False
+                self.timesUpPopUp()
+
+    def pauseCounter(self):
+        self.is_timer_running = False
+
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
     def show(self):
@@ -55,7 +105,7 @@ class Page(tk.Frame):
 class Page1(Page):
 
     def bindKeys(self):
-        self.bind_all('<F1>', lambda event: self.keyF1Pressed()) 
+        self.bind_all('<Control-q>', lambda event: self.quitPressed()) 
         self.bind_all('<Escape>', lambda event: self.keyESCPressed()) 
         self.bind_all('<Return>',lambda event: self.keyEnterPressed())
 
@@ -83,9 +133,9 @@ class Page1(Page):
         print ("Page1 ESC pressed")
         self.page2.myLift(self)
 
-    def keyF1Pressed(self):
-        print ("Page1 F1 pressed")
-        quit()
+    def quitPressed(self):
+        print ("Page1  quit pressed")
+        self.quitPopUp()
 
     def setPage2(self, p2):
         self.page2 = p2;
@@ -98,6 +148,14 @@ class Page1(Page):
         # current_focus_index = current focused entry.  Move to next by hitting
         # return key 
         self.current_focus_index = 0
+
+        # banner
+        lbl = tk.Label(self, text=GREETING_BANNER, width=100, 
+                anchor='w', font=("Arial",30))
+        lbl.pack(side=tk.TOP, padx=5, pady=5)
+
+        field = "SETUP"
+        LabelEntry(self, field, label=False)
 
         self.entries = []
         field = "Home TEAM NAME"
@@ -145,31 +203,34 @@ class Page2(Page):
         self.is_timer_running=False
         self.backToPage1()
 
-    def keyWPressed(self):
-        print ("Page2 W key pressed")
+    def homeScoreUpPressed(self):
+        print ("home score up pressed")
         self.score1 += 1
         self.fin.set(str(self.score1))
-    def keySPressed(self):
-        print ("Page2 S pressed")
-        self.score1 -= 1
+    def homeScoreDownPressed(self):
+        print ("home score down pressed")
+        if (self.score1 > 0):
+            self.score1 -= 1
         self.fin.set(str(self.score1))
-    def keyIPressed(self):
-        print ("Page 2 I pressed")
+    def visitorScoreUpPressed(self):
+        print ("visitor score up pressed")
         self.score2 += 1
         self.fin2.set(str(self.score2))
-    def keyKPressed(self):
-        print ("Page 2 K Pressed")
-        self.score2 -= 1
+    def visitorScoreDownPressed(self):
+        print ("visitor score down Pressed")
+        if (self.score2 > 0):
+            self.score2 -= 1
         self.fin2.set(str(self.score2))
-    def keyF1Pressed(self):
-        print ("Page 2 F1 Pressed")
-        quit()
-    def keyTPressed(self):
-        print ("start timer")
-        self.startCounter()
-    def keyEPressed(self):
-        print ("stop timer")
-        self.pauseCounter()
+    def quitPressed(self):
+        print ("quit Pressed")
+        self.quitPopUp()
+    def timerPressed(self):
+        print ("timer pressed")
+        #toggle start and pause
+        if (self.is_timer_running == True):
+            self.pauseCounter()
+        else :
+            self.startCounter()
     def setPage1(self, p1):
         self.page1 = p1;
 
@@ -179,10 +240,10 @@ class Page2(Page):
             self.is_timer_running=True
             self.decrementCounter()
 
-    def _popupDestroy(self):
+    def _timesUpPopupDestroy(self,event):
 
         # increment chukker and reset timer before destroy popup
-        if (self.chukker.get() < 3):
+        if (self.chukker.get() < 4):
             self.chukker.set(str(self.chukker.get()+1)) 
 
             print ("new Chukker %d"%(self.chukker.get()))
@@ -195,17 +256,18 @@ class Page2(Page):
 
         self.popup.destroy()
 
-    def _popupCallBack(self,event):
-        self._popupDestroy()
+    def _timesUpPopupCallBack(self,event):
+        self._timesUpPopupDestroy(event)
 
 
     def timesUpPopUp(self):
         self.popup = tk.Tk()
-        label= tk.Label(self.popup, text="TIMES UP !", font=("Arial",100),
+        self.popup.title("timesup")
+        label= tk.Label(self.popup, text="TIMES UP !", font=("Arial",50),
                     bg='#f00', fg='#fff')
         label.pack(side="top", fill="x", pady=10)
-        self.popup.bind ('<Return>',self._popupCallBack)
-        self.popup.bind ('<Escape>',self._popupCallBack)
+        self.popup.bind ('<Return>',self._timesUpPopupCallBack)
+        self.popup.bind ('<Escape>',self._timesUpPopupCallBack)
         self.popup.mainloop()
 
 
@@ -231,13 +293,12 @@ class Page2(Page):
 
     def bindKeys(self):
         self.bind_all('<Escape>',lambda event: self.keyEscapePressed())
-        self.bind('<w>',lambda event: self.keyWPressed())
-        self.bind('<s>', lambda event: self.keySPressed())
-        self.bind('<i>', lambda event: self.keyIPressed())
-        self.bind('<k>', lambda event: self.keyKPressed())
-        self.bind('<t>', lambda event: self.keyTPressed())
-        self.bind('<e>', lambda event: self.keyEPressed())
-        self.bind('<F1>', lambda event: self.keyF1Pressed())
+        self.bind('<w>',lambda event: self.homeScoreUpPressed())
+        self.bind('<s>', lambda event: self.homeScoreDownPressed())
+        self.bind('<i>', lambda event: self.visitorScoreUpPressed())
+        self.bind('<k>', lambda event: self.visitorScoreDownPressed())
+        self.bind('<space>', lambda event: self.timerPressed())
+        self.bind('<Control-q>', lambda event: self.quitPressed())
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -344,6 +405,7 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    root.title ('Scoobyboard')
     width = root.winfo_screenwidth()
     height =  root.winfo_screenheight()
     main = MainView(root)
