@@ -338,20 +338,25 @@ class Page2(Page):
         visitor_label.grid(row=0, column=2, sticky="nsew", pady=8)
     
         home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', height=2,  font=("Arial",200))
-        home_score_label.grid(row=1, column=0, sticky="nsew", pady=10)
+        home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=10)
     
         time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",100))
         time_label.grid(row=1, column=1, sticky="ew", pady=8)
     
         visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green',height=2,  font=("Arial", 200))
-        visitor_score_label.grid(row=1, column=2, sticky="nsew", pady=10)
+        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew", pady=10)
     
-        game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
-        game_time_label.grid(row=2, column=1, sticky="ew", pady=8)
+        #game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
+        #game_time_label.grid(row=1, column=1, sticky="ew", pady=8)
     
         chukker_label = tk.Label(self, textvariable = self.chukker, bg='grey', font=("Arial",100))
         chukker_label.grid(row=2, column=1, sticky="ew", pady=8)
     
+        image = Image.open("poway2.png")
+        image=image.resize((200,200), Image.ANTIALIAS)
+        self.visitor_img = ImageTk.PhotoImage(image)
+        visitor_logo = tk.Label(self,image=self.visitor_img)
+        visitor_logo.grid(row=3, column = 1, sticky ="ew", pady =4)
     
         self.bindKeys()
     
