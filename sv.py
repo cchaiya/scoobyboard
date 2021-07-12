@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import tkinter as tk
 from PIL import Image, ImageTk
 from functools import partial
@@ -9,10 +11,26 @@ CHUKKER_INDEX = 2
 TIME_MIN_INDEX = 3
 TIME_SEC_INDEX = 4
 
+CHUCKER_MAX = 8
 INIT_CHUKKER = 1
 INIT_MIN_IN_A_CHUKKER = 7
-INIT_SEC_IN_A_CHUKKER = 30 
+INIT_SEC_IN_A_CHUKKER = 30
 
+#change the green text to any RGB Hex code to change colors.
+# You can also set colors as 'black' or 'white'
+HOME_FONT_COLOR = 'black'
+VISITOR_FONT_COLOR ='black'
+
+
+#Change the green text to any RBG Hex code to change colors.
+HOME_TEAM_COLOR ='#d45047'
+VISITOR_TEAM_COLOR = '#4750D4'
+
+
+#Change the last /filename.png to the name of your image in the
+#Team_Logos_PNG file.
+HOME_PNG_FILE_NAME = '/home/blueberry/Team_Logos_PNG/poway1.png'
+VISITOR_PNG_FILE_NAME = '/home/blueberry/Team_Logos_PNG/poway2.png'
 
 GREETING_BANNER = """\n
 Scoobyboard V0.9\n
@@ -105,8 +123,8 @@ class Page(tk.Frame):
 class Page1(Page):
 
     def bindKeys(self):
-        self.bind_all('<Control-q>', lambda event: self.quitPressed()) 
-        self.bind_all('<Escape>', lambda event: self.keyESCPressed()) 
+        self.bind_all('<Control-q>', lambda event: self.quitPressed())
+        self.bind_all('<Escape>', lambda event: self.keyESCPressed())
         self.bind_all('<Return>',lambda event: self.keyEnterPressed())
 
     def myLift(self):
@@ -114,7 +132,7 @@ class Page1(Page):
         self.bindKeys()
 
         #set focus
-        self.entries[0].entry.focus() 
+        self.entries[0].entry.focus()
 
         self.lift()
 
@@ -124,10 +142,10 @@ class Page1(Page):
         # move focus to next label
         if (self.current_focus_index >= (len(self.entries)-1)):
             self.current_focus_index = 0
-        else: 
-            self.current_focus_index +=1 
+        else:
+            self.current_focus_index +=1
 
-        self.entries[self.current_focus_index].entry.focus() 
+        self.entries[self.current_focus_index].entry.focus()
 
     def keyESCPressed(self):
         print ("Page1 ESC pressed")
@@ -139,20 +157,20 @@ class Page1(Page):
 
     def setPage2(self, p2):
         self.page2 = p2;
-       
+
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
 
         self.root = args[0]
 
         # current_focus_index = current focused entry.  Move to next by hitting
-        # return key 
+        # return key
         self.current_focus_index = 0
 
         # banner
-        lbl = tk.Label(self, text=GREETING_BANNER, width=100, 
+        lbl = tk.Label(self, text=GREETING_BANNER, width=100,
                 anchor='w', font=("Arial",30))
-        lbl.pack(side=tk.TOP, padx=5, pady=5)
+        lbl.pack(side=tk.TOP, padx=5, pady=0)
 
         field = "SETUP"
         LabelEntry(self, field, label=False)
@@ -160,15 +178,15 @@ class Page1(Page):
         self.entries = []
         field = "Home TEAM NAME"
         self.entries.append(LabelEntry(self, field))
- 
+
         field = "Visitor TEAM NAME"
         self.entries.append(LabelEntry(self, field))
- 
+
         field = "Chukker"
         l = LabelEntry(self, field, validate_num=True)
         l.entry.insert(0,str(INIT_CHUKKER))
         self.entries.append(l)
- 
+
         field = "Timer (Minutes)"
         l = LabelEntry(self, field, validate_num=True)
         l.entry.insert(0,str(INIT_MIN_IN_A_CHUKKER))
@@ -199,7 +217,7 @@ class Page2(Page):
 
     def keyEscapePressed(self):
         print ("Page2 Escape key pressed")
-        # stop the counter before switching to page 1 
+        # stop the counter before switching to page 1
         self.is_timer_running=False
         self.backToPage1()
 
@@ -243,13 +261,13 @@ class Page2(Page):
     def _timesUpPopupDestroy(self,event):
 
         # increment chukker and reset timer before destroy popup
-        if (self.chukker.get() < 4):
-            self.chukker.set(str(self.chukker.get()+1)) 
+        if (self.chukker.get() < CHUCKER_MAX):
+            self.chukker.set(str(self.chukker.get()+1))
 
             print ("new Chukker %d"%(self.chukker.get()))
             self.timer_min = INIT_MIN_IN_A_CHUKKER
             self.timer_sec =INIT_SEC_IN_A_CHUKKER
-            self.timer_count= self.timer_min*60 +self.timer_sec 
+            self.timer_count= self.timer_min*60 +self.timer_sec
 
             strx = str(self.timer_min) + ":" + str(self.timer_sec)
             self.timer.set(str(strx))
@@ -265,7 +283,7 @@ class Page2(Page):
         self.popup.title("timesup")
         label= tk.Label(self.popup, text="TIMES UP !", font=("Arial",50),
                     bg='#f00', fg='#fff')
-        label.pack(side="top", fill="x", pady=10)
+        label.pack(side="top", fill="x", pady=0)
         self.popup.bind ('<Return>',self._timesUpPopupCallBack)
         self.popup.bind ('<Escape>',self._timesUpPopupCallBack)
         self.popup.mainloop()
@@ -322,41 +340,41 @@ class Page2(Page):
     
         self.is_timer_running=False  ## timer is or is not running
     
-        image = Image.open("poway2.png")
+        image = Image.open(HOME_PNG_FILE_NAME)
         image=image.resize((300,300), Image.ANTIALIAS)
         self.my_img = ImageTk.PhotoImage(image)
         poway_logo = tk.Label(self,image=self.my_img)
-        poway_logo.grid(row=0, column = 1, sticky ="ew", pady =4)
+        poway_logo.grid(row=0, column = 1, sticky ="ew", pady =0)
     
     
-        home_label = tk.Label(self, textvariable=self.home_name, bg='blue', width= 15, height=2, font=("Arial",50))
-        home_label.grid(row=0, column= 0, sticky ="nsew", pady=8)
+        home_label = tk.Label(self, textvariable=self.home_name, bg=HOME_TEAM_COLOR, width= 15, height=2,fg=HOME_FONT_COLOR, font=("Arial",50))
+        home_label.grid(row=0, column= 0, sticky ="nsew", pady=0)
     
     
-        visitor_label = tk.Label(self, textvariable=self.visitor_name, bg='green',width= 15, height=2, font=("Arial", 50))
+        visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=VISITOR_TEAM_COLOR,width= 15, height=2, font=("Arial", 50), fg=VISITOR_FONT_COLOR)
 #        visitor_label.grid(row=0, column=2, pady=8)
-        visitor_label.grid(row=0, column=2, sticky="nsew", pady=8)
+        visitor_label.grid(row=0, column=2, sticky="nsew", pady=0)
     
-        home_score_label = tk. Label(self, textvariable=self.fin, bg='blue', height=2,  font=("Arial",200))
-        home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=10)
+        home_score_label = tk. Label(self, textvariable=self.fin, bg=HOME_TEAM_COLOR, height=2,  font=("Arial",200), fg=HOME_FONT_COLOR)
+        home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=0)
     
         time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",100))
-        time_label.grid(row=1, column=1, sticky="ew", pady=8)
+        time_label.grid(row=1, column=1, sticky="ew", pady=0)
     
-        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg='green',height=2,  font=("Arial", 200))
-        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew", pady=10)
+        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg=VISITOR_TEAM_COLOR,height=2,  font=("Arial", 200), fg=VISITOR_FONT_COLOR)
+        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew", pady=0)
     
         #game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
         #game_time_label.grid(row=1, column=1, sticky="ew", pady=8)
     
         chukker_label = tk.Label(self, textvariable = self.chukker, bg='grey', font=("Arial",100))
-        chukker_label.grid(row=2, column=1, sticky="ew", pady=8)
+        chukker_label.grid(row=2, column=1, sticky="ew", pady=0)
     
-        image = Image.open("poway2.png")
+        image = Image.open(VISITOR_PNG_FILE_NAME)
         image=image.resize((200,200), Image.ANTIALIAS)
         self.visitor_img = ImageTk.PhotoImage(image)
         visitor_logo = tk.Label(self,image=self.visitor_img)
-        visitor_logo.grid(row=3, column = 1, sticky ="ew", pady =4)
+        visitor_logo.grid(row=3, column = 1, sticky ="ew", pady =0)
     
         self.bindKeys()
     
