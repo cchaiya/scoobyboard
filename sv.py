@@ -347,31 +347,31 @@ class Page2(Page):
         poway_logo.grid(row=0, column = 1, sticky ="ew", pady =0)
     
     
-        home_label = tk.Label(self, textvariable=self.home_name, bg=HOME_TEAM_COLOR, width= 15, height=2,fg=HOME_FONT_COLOR, font=("Arial",50))
+        home_label = tk.Label(self, textvariable=self.home_name, bg=HOME_TEAM_COLOR, width= 12, height=1,fg=HOME_FONT_COLOR, font=("Arial",75))
         home_label.grid(row=0, column= 0, sticky ="nsew", pady=0)
     
     
-        visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=VISITOR_TEAM_COLOR,width= 15, height=2, font=("Arial", 50), fg=VISITOR_FONT_COLOR)
+        visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=VISITOR_TEAM_COLOR,width= 12, height=1, font=("Arial", 75), fg=VISITOR_FONT_COLOR)
 #        visitor_label.grid(row=0, column=2, pady=8)
         visitor_label.grid(row=0, column=2, sticky="nsew", pady=0)
     
-        home_score_label = tk. Label(self, textvariable=self.fin, bg=HOME_TEAM_COLOR, height=2,  font=("Arial",200), fg=HOME_FONT_COLOR)
+        home_score_label = tk. Label(self, textvariable=self.fin, bg=HOME_TEAM_COLOR, height=1,  font=("Arial",450), fg=HOME_FONT_COLOR)
         home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=0)
     
-        time_label = tk.Label(self, textvariable=self.timer, bg='grey', font=("Arial",100))
+        time_label = tk.Label(self, textvariable=self.timer,width = 4,  bg='grey', font=("Arial",190))
         time_label.grid(row=1, column=1, sticky="ew", pady=0)
     
-        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg=VISITOR_TEAM_COLOR,height=2,  font=("Arial", 200), fg=VISITOR_FONT_COLOR)
-        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew", pady=0)
+        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg=VISITOR_TEAM_COLOR,height=1,  font=("Arial", 450), fg=VISITOR_FONT_COLOR)
+        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew",  pady=0)
     
         #game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
         #game_time_label.grid(row=1, column=1, sticky="ew", pady=8)
     
-        chukker_label = tk.Label(self, textvariable = self.chukker, bg='grey', font=("Arial",100))
+        chukker_label = tk.Label(self, textvariable = self.chukker, bg='grey', font=("Arial",125))
         chukker_label.grid(row=2, column=1, sticky="ew", pady=0)
     
         image = Image.open(VISITOR_PNG_FILE_NAME)
-        image=image.resize((200,200), Image.ANTIALIAS)
+        image=image.resize((300,300), Image.ANTIALIAS)
         self.visitor_img = ImageTk.PhotoImage(image)
         visitor_logo = tk.Label(self,image=self.visitor_img)
         visitor_logo.grid(row=3, column = 1, sticky ="ew", pady =0)
@@ -428,7 +428,7 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title ('Scoobyboard')
+    root.wm_attributes('-fullscreen','true')
     width = root.winfo_screenwidth()
     height =  root.winfo_screenheight()
     main = MainView(root)
