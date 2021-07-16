@@ -29,8 +29,8 @@ VISITOR_TEAM_COLOR = '#4750D4'
 
 #Change the last /filename.png to the name of your image in the
 #Team_Logos_PNG file.
-HOME_PNG_FILE_NAME = '/home/blueberry/Team_Logos_PNG/poway1.png'
-VISITOR_PNG_FILE_NAME = '/home/blueberry/Team_Logos_PNG/poway2.png'
+HOME_PNG_FILE_NAME = './Team_Logos_PNG/poway1.png'
+VISITOR_PNG_FILE_NAME = './Team_Logos_PNG/poway2.png'
 
 GREETING_BANNER = """\n
 Scoobyboard V0.9\n
@@ -104,7 +104,7 @@ class Page(tk.Frame):
              #convert count into min and second
              m, s = divmod(self.timer_count,60)
              print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
-             strx = str(m) + ":" + str(s)
+             strx = "%d:%02d"%(m,s)
              self.timer.set(str(strx))
 
              if (self.timer_count ==0) :     ## time is up so exit
@@ -269,7 +269,7 @@ class Page2(Page):
             self.timer_sec =INIT_SEC_IN_A_CHUKKER
             self.timer_count= self.timer_min*60 +self.timer_sec
 
-            strx = str(self.timer_min) + ":" + str(self.timer_sec)
+            strx = "%d:%02d"%(self.timer_min,self.timer_sec)
             self.timer.set(str(strx))
 
         self.popup.destroy()
@@ -299,7 +299,7 @@ class Page2(Page):
              #convert count into min and second
              m, s = divmod(self.timer_count,60)
              print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
-             strx = str(m) + ":" + str(s)
+             strx = "%d:%02d"%(m,s)
              self.timer.set(str(strx))
 
              if (self.timer_count ==0) :     ## time is up so exit
@@ -399,7 +399,7 @@ class Page2(Page):
 
         self.timer_count= self.timer_min*60 +self.timer_sec 
 
-        strx = m + ":" + s
+        strx = "%d:%02d"%(self.timer_min,self.timer_sec)
         self.timer.set(str(strx))
 
         self.bindKeys()
