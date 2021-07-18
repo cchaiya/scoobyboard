@@ -1,17 +1,17 @@
 #!/usr/bin/python3
-
+import os
 import tkinter as tk
 from PIL import Image, ImageTk
 from functools import partial
 
-
+#these are variable setups. 
 HOME_TEAM_NAME_INDEX = 0
 VISITOR_TEAM_NAME_INDEX = 1
 CHUKKER_INDEX = 2
 TIME_MIN_INDEX = 3
 TIME_SEC_INDEX = 4
 
-CHUCKER_MAX =9
+CHUCKER_MAX =12
 INIT_CHUKKER = 1
 INIT_MIN_IN_A_CHUKKER = 7
 INIT_SEC_IN_A_CHUKKER = 30
@@ -30,8 +30,10 @@ VISITOR_TEAM_COLOR = '#4750D4'
 #Change the last /filename.png to the name of your image in the
 #Team_Logos_PNG file.
 HOME_PNG_FILE_NAME = './Team_Logos_PNG/poway1.png'
-VISITOR_PNG_FILE_NAME = './Team_Logos_PNG/poway2.png'
+VISITOR_PNG_FILE_NAME = './Team_Logos_PNG/lakeside1.png'
 
+
+#do not touch.
 GREETING_BANNER = """\n
 Scoobyboard V0.9\n
 git@github.com:cchaiya/scoobyboard.git\n
@@ -74,13 +76,12 @@ class LabelEntry(tk.Frame):
             self.entry=entry
 
 
-class Page(tk.Frame):
-
+class Page(tk.Frame): 
     def _popupDestroy(self,event):
         self.quitPopup.destroy()
 
     def _popupQuit(self,event):
-        quit()
+        os.system("sudo shutdown now")
 
     def quitPopUp(self):
         self.quitPopup = tk.Tk()
@@ -126,7 +127,7 @@ class Page1(Page):
         self.bind_all('<Control-q>', lambda event: self.quitPressed())
         self.bind_all('<Escape>', lambda event: self.keyESCPressed())
         self.bind_all('<Return>',lambda event: self.keyEnterPressed())
-
+        self.bind_all('<Control-T>', lambda event: self.shutDown())
     def myLift(self):
         print ("Page1 lift")
         self.bindKeys()
@@ -157,6 +158,9 @@ class Page1(Page):
 
     def setPage2(self, p2):
         self.page2 = p2;
+    def shutDown(self):
+        print("terminate")
+        quit()
 
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -251,6 +255,9 @@ class Page2(Page):
             self.startCounter()
     def setPage1(self, p1):
         self.page1 = p1;
+    def ShutDown(self):
+        print("terminate")
+        quit()
 
 
     def startCounter(self):
@@ -311,11 +318,12 @@ class Page2(Page):
 
     def bindKeys(self):
         self.bind_all('<Escape>',lambda event: self.keyEscapePressed())
-        self.bind('<w>',lambda event: self.homeScoreUpPressed())
-        self.bind('<s>', lambda event: self.homeScoreDownPressed())
-        self.bind('<i>', lambda event: self.visitorScoreUpPressed())
-        self.bind('<k>', lambda event: self.visitorScoreDownPressed())
+        self.bind('<KP_4>',lambda event: self.homeScoreUpPressed())
+        self.bind('<KP_1>', lambda event: self.homeScoreDownPressed())
+        self.bind('<KP_6>', lambda event: self.visitorScoreUpPressed())
+        self.bind('<KP_3>', lambda event: self.visitorScoreDownPressed())
         self.bind('<space>', lambda event: self.timerPressed())
+        self.bind('<Control-T>', lambda event: self.ShutDown())
         self.bind('<Control-q>', lambda event: self.quitPressed())
 
     def __init__(self, *args, **kwargs):
@@ -433,5 +441,6 @@ if __name__ == "__main__":
     height =  root.winfo_screenheight()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
+   # root.wm_geometry('800x800')   
     root.wm_geometry('%dx%d'%(width,height))
     root.mainloop()

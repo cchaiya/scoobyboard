@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# assuming scoobyboard repository is in /home/blueberry/sccobyboard
+cd /home/blueberry/scoobyboard
+./sv.py
+
