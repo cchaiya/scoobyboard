@@ -35,7 +35,7 @@ VISITOR_PNG_FILE_NAME = './Team_Logos_PNG/lakeside1.png'
 
 #do not touch.
 GREETING_BANNER = """\n
-Scoobyboard V0.9\n
+Scoobyboard V1.0\n
 git@github.com:cchaiya/scoobyboard.git\n
 """
 
