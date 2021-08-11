@@ -21,21 +21,35 @@ INIT_SEC_IN_A_CHUKKER = 30
 HOME_FONT_COLOR = 'black'
 VISITOR_FONT_COLOR ='black'
 
-
-#Change the green text to any RBG Hex code to change colors.
-HOME_TEAM_COLOR ='#d45047'
-VISITOR_TEAM_COLOR = '#4750D4'
-
-
 #Change the last /filename.png to the name of your image in the
 #Team_Logos_PNG file.
 HOME_PNG_FILE_NAME = './Team_Logos_PNG/poway1.png'
 VISITOR_PNG_FILE_NAME = './Team_Logos_PNG/lakeside1.png'
 
+COLOR_CODE={
+     "Red": "#d45047",
+     "Blue": "#4750D4",
+     "Black": "#0D0D0D",
+     "White": "#EDEDED",
+     "Yellow":"#F5E82F",
+     "Orange":"#ED9128",
+     "Green":"#45A348"
+}
+
+FONT_COLOR = {
+     "Black" : "black",
+     "White" : "white"
+}
+
+LOGO = {
+     "Poway 1" : "./Team_Logos_PNG/poway1.png",
+     "Poway 2" : "./Team_Logos_PNG/poway2.png",
+     "Lakeside": "./Team_Logos_PNG/lakeside1.png"
+}
 
 #do not touch.
 GREETING_BANNER = """\n
-Scoobyboard V0.9\n
+Scoobyboard V1.0\n
 git@github.com:cchaiya/scoobyboard.git\n
 """
 
@@ -49,21 +63,23 @@ class LabelEntry(tk.Frame):
     def onlyNumbers(self, char):
         return char.isdigit()
 
-    def __init__(self, parent, text, button=None, label=True,validate_num=False):
+    def __init__(self, parent, text, label=True,validate_num=False,
+                     choices=None):
         super().__init__(parent)
         self.pack(fill=tk.X)
 
         lbl = tk.Label(self, text=text, width=14, anchor='w')
         lbl.pack(side=tk.LEFT, padx=5, pady=5)
 
-        if button:
-            frame2 = tk.Frame(self)
-            frame2.pack(side=tk.LEFT, expand=True)
 
-            entry = tk.Entry(frame2)
-            entry.pack(side=tk.LEFT, fill=tk.X, padx=5)
+        if choices != None:
+            c = tk.StringVar()
+            c.set(choices[0])
+            drop =  tk.OptionMenu( self , c , *choices )
+            drop.pack(side=tk.LEFT, fill=tk.X, padx=5)
+            self.entry=drop
+            self.choice = c;
 
-            button.pack(in_=frame2, side=tk.LEFT, padx=5, pady=5)
         elif label:
 
             if (validate_num):
@@ -200,6 +216,40 @@ class Page1(Page):
         l = LabelEntry(self, field, validate_num=True)
         l.entry.insert(0,str(INIT_SEC_IN_A_CHUKKER))
         self.entries.append(l)
+
+        field = "Home Background"
+        color_options=["Red","Blue", "Black", "White", "Yellow", "Green", "Orange"]
+        l = LabelEntry(self, field,  choices=color_options)
+        self.entries.append(l)
+        self.home_choice = l.choice
+
+        field = "Home Font Color"
+        color_options=["Black", "White"]
+        l = LabelEntry(self, field, choices=color_options)
+        self.entries.append(l)
+        self.home_font_color = l.choice
+
+        field = "Home Team Logo"
+        logo_options=["Poway 1", "Poway 2", "Lakeside"]
+        l = LabelEntry(self, field, choices=logo_options)
+        self.home_logo= l.choice
+
+        field = "Visitor Background"
+        color_options=["Blue", "Red", "Black", "White", "Yellow", "Green", "Orange"]
+        l = LabelEntry(self, field, choices=color_options)
+        self.entries.append(l)
+        self.visitor_choice= l.choice
+
+        field = "Visitor Font Color"
+        color_options=["Black", "White"]
+        l = LabelEntry(self, field, choices=color_options)
+        self.entries.append(l)
+        self.visitor_font_color = l.choice
+
+        field = "Visitor Logo"
+        logo_options=["Poway 1", "Poway 2", "Lakeside"]
+        l = LabelEntry(self, field, choices=logo_options)
+        self.visitor_logo= l.choice
 
 class Page2(Page):
 
@@ -345,32 +395,51 @@ class Page2(Page):
         self.timer_min = 0
         self.timer_sec = 0 
         self.timer_count= 0
-    
+
+        self.home_choice = tk.StringVar()
+        self.home_choice.set("Red")
+
+        self.visitor_choice = tk.StringVar()
+        self.visitor_choice.set("Blue")
+
+        self.home_font_color = tk.StringVar()
+        self.home_font_color.set("Black")
+
+
+        self.visitor_font_color = tk.StringVar()
+        self.visitor_font_color.set("Black")
+
+        self.home_logo = tk.StringVar()
+        self.home_logo.set("Poway 1")
+
+
+        self.visitor_logo = tk.StringVar()
+        self.visitor_logo.set("Poway 2")
+
         self.is_timer_running=False  ## timer is or is not running
     
-        image = Image.open(HOME_PNG_FILE_NAME)
+        image = Image.open(LOGO[self.home_logo.get()])
         image=image.resize((300,300), Image.ANTIALIAS)
         self.my_img = ImageTk.PhotoImage(image)
-        poway_logo = tk.Label(self,image=self.my_img)
-        poway_logo.grid(row=0, column = 1, sticky ="ew", pady =0)
+        self.poway_logo = tk.Label(self,image=self.my_img)
+        self.poway_logo.grid(row=0, column = 1, sticky ="ew", pady =0)
     
     
-        home_label = tk.Label(self, textvariable=self.home_name, bg=HOME_TEAM_COLOR, width= 12, height=1,fg=HOME_FONT_COLOR, font=("Arial",75))
-        home_label.grid(row=0, column= 0, sticky ="nsew", pady=0)
+        self.home_label = tk.Label(self, textvariable=self.home_name, bg=COLOR_CODE[self.home_choice.get()], width= 12, height=1,fg=FONT_COLOR[self.home_font_color.get()], font=("Arial",75))
+        self.home_label.grid(row=0, column= 0, sticky ="nsew", pady=0)
     
     
-        visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=VISITOR_TEAM_COLOR,width= 12, height=1, font=("Arial", 75), fg=VISITOR_FONT_COLOR)
-#        visitor_label.grid(row=0, column=2, pady=8)
-        visitor_label.grid(row=0, column=2, sticky="nsew", pady=0)
+        self.visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=COLOR_CODE[self.visitor_choice.get()],width= 12, height=1, font=("Arial", 75), fg=FONT_COLOR[self.visitor_font_color.get()])
+        self.visitor_label.grid(row=0, column=2, sticky="nsew", pady=0)
     
-        home_score_label = tk. Label(self, textvariable=self.fin, bg=HOME_TEAM_COLOR, height=1,  font=("Arial",450), fg=HOME_FONT_COLOR)
-        home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=0)
+        self.home_score_label = tk. Label(self, textvariable=self.fin, bg=COLOR_CODE[self.home_choice.get()], height=1,  font=("Arial",450), fg=FONT_COLOR[self.home_font_color.get()])
+        self.home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=0)
     
         time_label = tk.Label(self, textvariable=self.timer,width = 4,  bg='grey', font=("Arial",190))
         time_label.grid(row=1, column=1, sticky="ew", pady=0)
     
-        visitor_score_label = tk.Label(self, textvariable=self.fin2, bg=VISITOR_TEAM_COLOR,height=1,  font=("Arial", 450), fg=VISITOR_FONT_COLOR)
-        visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew",  pady=0)
+        self.visitor_score_label = tk.Label(self, textvariable=self.fin2, bg=COLOR_CODE[self.visitor_choice.get()],height=1,  font=("Arial", 450), fg=FONT_COLOR[self.visitor_font_color.get()])
+        self.visitor_score_label.grid(row=1, rowspan = 3, column=2, sticky="nsew",  pady=0)
     
         #game_time_label = tk.Label(self, text=self.timer, bg='grey', font=("Arial",100))
         #game_time_label.grid(row=1, column=1, sticky="ew", pady=8)
@@ -378,11 +447,11 @@ class Page2(Page):
         chukker_label = tk.Label(self, textvariable = self.chukker, bg='grey', font=("Arial",125))
         chukker_label.grid(row=2, column=1, sticky="ew", pady=0)
     
-        image = Image.open(VISITOR_PNG_FILE_NAME)
+        image = Image.open(LOGO[self.visitor_logo.get()])
         image=image.resize((300,300), Image.ANTIALIAS)
         self.visitor_img = ImageTk.PhotoImage(image)
-        visitor_logo = tk.Label(self,image=self.visitor_img)
-        visitor_logo.grid(row=3, column = 1, sticky ="ew", pady =0)
+        self.visitor_l = tk.Label(self,image=self.visitor_img)
+        self.visitor_l.grid(row=3, column = 1, sticky ="ew", pady =0)
     
         self.bindKeys()
     
@@ -410,9 +479,41 @@ class Page2(Page):
         strx = "%d:%02d"%(self.timer_min,self.timer_sec)
         self.timer.set(str(strx))
 
+
+        self.home_choice.set( p1.home_choice.get())
+        print ("home_choice = %s"%self.home_choice.get())
+        self.home_label.config(bg=COLOR_CODE[self.home_choice.get()])
+        self.home_score_label.config(bg=COLOR_CODE[self.home_choice.get()])
+
+        self.visitor_choice.set( p1.visitor_choice.get())
+        self.visitor_label.config(bg=COLOR_CODE[self.visitor_choice.get()])
+        self.visitor_score_label.config(bg=COLOR_CODE[self.visitor_choice.get()])
+
+        self.home_font_color.set(p1.home_font_color.get())
+        self.home_label.config(fg=FONT_COLOR[self.home_font_color.get()])
+        self.home_score_label.config(fg=FONT_COLOR[self.home_font_color.get()])
+
+
+        self.visitor_font_color.set(p1.visitor_font_color.get())
+        self.visitor_label.config(fg=FONT_COLOR[self.visitor_font_color.get()])
+        self.visitor_score_label.config(fg=FONT_COLOR[self.visitor_font_color.get()])
+
+        self.visitor_logo.set(p1.visitor_logo.get())
+        image = Image.open(LOGO[self.visitor_logo.get()])
+        image=image.resize((300,300), Image.ANTIALIAS)
+        self.visitor_img = ImageTk.PhotoImage(image)
+        self.visitor_l.configure(image=self.visitor_img)
+
+        self.home_logo.set(p1.home_logo.get())
+        image = Image.open(LOGO[self.home_logo.get()])
+        image=image.resize((300,300), Image.ANTIALIAS)
+        self.my_img = ImageTk.PhotoImage(image)
+        self.poway_logo.configure(image=self.my_img)
+
+
         self.bindKeys()
         self.focus_set()
-       
+ 
         self.lift()
 
 
