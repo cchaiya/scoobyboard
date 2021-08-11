@@ -63,7 +63,7 @@ class LabelEntry(tk.Frame):
             c.set(choices[0])
             drop =  tk.OptionMenu( self , c , *choices )
             drop.pack(side=tk.LEFT, fill=tk.X, padx=5)
-            self.choice=c
+            self.entry=drop
 
         elif label:
 
