@@ -10,6 +10,12 @@ VISITOR_TEAM_NAME_INDEX = 1
 CHUKKER_INDEX = 2
 TIME_MIN_INDEX = 3
 TIME_SEC_INDEX = 4
+HOME_BG_INDEX = 5
+HOME_FG_INDEX = 6
+HOME_LOGO_INDEX = 7
+VISITOR_BG_INDEX = 8
+VISITOR_FG_INDEX = 9
+VISITOR_LOGO_INDEX = 10
 
 CHUCKER_MAX =12
 INIT_CHUKKER = 1
@@ -35,17 +41,20 @@ COLOR_CODE={
      "Orange":"#ED9128",
      "Green":"#45A348"
 }
+BG_COLOR_OPTIONS=["Red","Blue", "Black", "White", "Yellow", "Orange", "Green"]
 
 FONT_COLOR = {
      "Black" : "black",
      "White" : "white"
 }
+FG_COLOR_OPTIONS=["Black","White"]
 
 LOGO = {
      "Poway 1" : "./Team_Logos_PNG/poway1.png",
      "Poway 2" : "./Team_Logos_PNG/poway2.png",
      "Lakeside": "./Team_Logos_PNG/lakeside1.png"
 }
+LOGO_OPTIONS=["Poway 1","Poway 2", "Lakeside"]
 
 #do not touch.
 GREETING_BANNER = """\n
@@ -120,7 +129,7 @@ class Page(tk.Frame):
 
              #convert count into min and second
              m, s = divmod(self.timer_count,60)
-             print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
+             #print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
              strx = "%d:%02d"%(m,s)
              self.timer.set(str(strx))
 
@@ -144,8 +153,12 @@ class Page1(Page):
         self.bind_all('<Escape>', lambda event: self.keyESCPressed())
         self.bind_all('<Return>',lambda event: self.keyEnterPressed())
         self.bind_all('<Control-T>', lambda event: self.shutDown())
+        self.bind_all('<Right>', lambda event: self.keyRightPressed())
+        self.bind_all('<Left>', lambda event: self.keyLeftPressed())
+        self.bind_all('<Down>', lambda event: self.keyEnterPressed())
+        self.bind_all('<Up>', lambda event: self.keyUpPressed())
+
     def myLift(self):
-        print ("Page1 lift")
         self.bindKeys()
 
         #set focus
@@ -155,7 +168,6 @@ class Page1(Page):
 
     def keyEnterPressed(self):
 
-        print ("Page1 Return key pressed")
         # move focus to next label
         if (self.current_focus_index >= (len(self.entries)-1)):
             self.current_focus_index = 0
@@ -164,12 +176,62 @@ class Page1(Page):
 
         self.entries[self.current_focus_index].entry.focus()
 
+    def keyUpPressed(self):
+
+        # move focus to next label
+        if (self.current_focus_index == 0):
+            self.current_focus_index = len(self.entries)-1
+        else:
+            self.current_focus_index -=1
+
+        self.entries[self.current_focus_index].entry.focus()
+
+    def _nextLeftIndex(self, option_list, cur_option):
+        i = option_list.index(cur_option)
+        if (i == 0):
+           i = len(option_list) -1 
+        else:
+           i -=1
+        return i
+
+    def keyLeftPressed(self):
+        if (self.current_focus_index == HOME_BG_INDEX ):
+            ind = self._nextLeftIndex(BG_COLOR_OPTIONS, self.home_bg_color.get())
+            self.home_bg_color.set(BG_COLOR_OPTIONS[ind])
+        elif (self.current_focus_index == HOME_FG_INDEX ):
+            ind = self._nextLeftIndex(FG_COLOR_OPTIONS, self.home_fg_color.get())
+            self.home_fg_color.set(FG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == HOME_LOGO_INDEX ):
+            ind = self._nextLeftIndex(LOGO_OPTIONS, self.home_logo.get())
+            self.home_logo.set(LOGO_OPTIONS[ind])
+        else:
+            print ("No choices")
+
+    def _nextRightIndex(self, option_list, cur_option):
+        i = option_list.index(cur_option)
+        if (i == len(option_list)-1):
+           i = 0
+        else:
+           i +=1
+        return i
+
+    def keyRightPressed(self):
+        if (self.current_focus_index == HOME_BG_INDEX ):
+            ind = self._nextRightIndex(BG_COLOR_OPTIONS, self.home_bg_color.get())
+            self.home_bg_color.set(BG_COLOR_OPTIONS[ind])
+        elif (self.current_focus_index == HOME_FG_INDEX ):
+            ind = self._nextRightIndex(FG_COLOR_OPTIONS, self.home_fg_color.get())
+            self.home_fg_color.set(FG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == HOME_LOGO_INDEX ):
+            ind = self._nextRightIndex(LOGO_OPTIONS, self.home_logo.get())
+            self.home_logo.set(LOGO_OPTIONS[ind])
+        else:
+            print ("No choices")
+
     def keyESCPressed(self):
-        print ("Page1 ESC pressed")
         self.page2.myLift(self)
 
     def quitPressed(self):
-        print ("Page1  quit pressed")
         self.quitPopUp()
 
     def setPage2(self, p2):
@@ -218,21 +280,19 @@ class Page1(Page):
         self.entries.append(l)
 
         field = "Home Background"
-        color_options=["Red","Blue", "Black", "White", "Yellow", "Green", "Orange"]
-        l = LabelEntry(self, field,  choices=color_options)
+        l = LabelEntry(self, field,  choices=BG_COLOR_OPTIONS)
         self.entries.append(l)
-        self.home_choice = l.choice
+        self.home_bg_color = l.choice
 
         field = "Home Font Color"
-        color_options=["Black", "White"]
-        l = LabelEntry(self, field, choices=color_options)
+        l = LabelEntry(self, field, choices=FG_COLOR_OPTIONS)
         self.entries.append(l)
-        self.home_font_color = l.choice
+        self.home_fg_color = l.choice
 
         field = "Home Team Logo"
-        logo_options=["Poway 1", "Poway 2", "Lakeside"]
-        l = LabelEntry(self, field, choices=logo_options)
+        l = LabelEntry(self, field, choices=LOGO_OPTIONS)
         self.home_logo= l.choice
+        self.entries.append(l)
 
         field = "Visitor Background"
         color_options=["Blue", "Red", "Black", "White", "Yellow", "Green", "Orange"]
@@ -250,6 +310,7 @@ class Page1(Page):
         logo_options=["Poway 1", "Poway 2", "Lakeside"]
         l = LabelEntry(self, field, choices=logo_options)
         self.visitor_logo= l.choice
+        self.entries.append(l)
 
 class Page2(Page):
 
@@ -355,7 +416,7 @@ class Page2(Page):
 
              #convert count into min and second
              m, s = divmod(self.timer_count,60)
-             print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
+             #print ("count: %d, Min: %d, Sec: %d"%(self.timer_count,m,s))
              strx = "%d:%02d"%(m,s)
              self.timer.set(str(strx))
 
@@ -396,14 +457,14 @@ class Page2(Page):
         self.timer_sec = 0 
         self.timer_count= 0
 
-        self.home_choice = tk.StringVar()
-        self.home_choice.set("Red")
+        self.home_bg_color = tk.StringVar()
+        self.home_bg_color.set("Red")
 
         self.visitor_choice = tk.StringVar()
         self.visitor_choice.set("Blue")
 
-        self.home_font_color = tk.StringVar()
-        self.home_font_color.set("Black")
+        self.home_fg_color = tk.StringVar()
+        self.home_fg_color.set("Black")
 
 
         self.visitor_font_color = tk.StringVar()
@@ -425,14 +486,14 @@ class Page2(Page):
         self.poway_logo.grid(row=0, column = 1, sticky ="ew", pady =0)
     
     
-        self.home_label = tk.Label(self, textvariable=self.home_name, bg=COLOR_CODE[self.home_choice.get()], width= 12, height=1,fg=FONT_COLOR[self.home_font_color.get()], font=("Arial",75))
+        self.home_label = tk.Label(self, textvariable=self.home_name, bg=COLOR_CODE[self.home_bg_color.get()], width= 12, height=1,fg=FONT_COLOR[self.home_fg_color.get()], font=("Arial",75))
         self.home_label.grid(row=0, column= 0, sticky ="nsew", pady=0)
     
     
         self.visitor_label = tk.Label(self, textvariable=self.visitor_name, bg=COLOR_CODE[self.visitor_choice.get()],width= 12, height=1, font=("Arial", 75), fg=FONT_COLOR[self.visitor_font_color.get()])
         self.visitor_label.grid(row=0, column=2, sticky="nsew", pady=0)
     
-        self.home_score_label = tk. Label(self, textvariable=self.fin, bg=COLOR_CODE[self.home_choice.get()], height=1,  font=("Arial",450), fg=FONT_COLOR[self.home_font_color.get()])
+        self.home_score_label = tk. Label(self, textvariable=self.fin, bg=COLOR_CODE[self.home_bg_color.get()], height=1,  font=("Arial",450), fg=FONT_COLOR[self.home_fg_color.get()])
         self.home_score_label.grid(row=1, rowspan=3, column=0, sticky="nsew", pady=0)
     
         time_label = tk.Label(self, textvariable=self.timer,width = 4,  bg='grey', font=("Arial",190))
@@ -480,18 +541,18 @@ class Page2(Page):
         self.timer.set(str(strx))
 
 
-        self.home_choice.set( p1.home_choice.get())
-        print ("home_choice = %s"%self.home_choice.get())
-        self.home_label.config(bg=COLOR_CODE[self.home_choice.get()])
-        self.home_score_label.config(bg=COLOR_CODE[self.home_choice.get()])
+        self.home_bg_color.set( p1.home_bg_color.get())
+        print ("home_bg_color = %s"%self.home_bg_color.get())
+        self.home_label.config(bg=COLOR_CODE[self.home_bg_color.get()])
+        self.home_score_label.config(bg=COLOR_CODE[self.home_bg_color.get()])
 
         self.visitor_choice.set( p1.visitor_choice.get())
         self.visitor_label.config(bg=COLOR_CODE[self.visitor_choice.get()])
         self.visitor_score_label.config(bg=COLOR_CODE[self.visitor_choice.get()])
 
-        self.home_font_color.set(p1.home_font_color.get())
-        self.home_label.config(fg=FONT_COLOR[self.home_font_color.get()])
-        self.home_score_label.config(fg=FONT_COLOR[self.home_font_color.get()])
+        self.home_fg_color.set(p1.home_fg_color.get())
+        self.home_label.config(fg=FONT_COLOR[self.home_fg_color.get()])
+        self.home_score_label.config(fg=FONT_COLOR[self.home_fg_color.get()])
 
 
         self.visitor_font_color.set(p1.visitor_font_color.get())
