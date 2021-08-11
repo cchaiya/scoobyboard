@@ -49,21 +49,22 @@ class LabelEntry(tk.Frame):
     def onlyNumbers(self, char):
         return char.isdigit()
 
-    def __init__(self, parent, text, button=None, label=True,validate_num=False):
+    def __init__(self, parent, text, label=True,validate_num=False,
+                     choices=None):
         super().__init__(parent)
         self.pack(fill=tk.X)
 
         lbl = tk.Label(self, text=text, width=14, anchor='w')
         lbl.pack(side=tk.LEFT, padx=5, pady=5)
 
-        if button:
-            frame2 = tk.Frame(self)
-            frame2.pack(side=tk.LEFT, expand=True)
 
-            entry = tk.Entry(frame2)
-            entry.pack(side=tk.LEFT, fill=tk.X, padx=5)
+        if choices != None:
+            c = tk.StringVar()
+            c.set(choices[0])
+            drop =  tk.OptionMenu( self , c , *choices )
+            drop.pack(side=tk.LEFT, fill=tk.X, padx=5)
+            self.choice=c
 
-            button.pack(in_=frame2, side=tk.LEFT, padx=5, pady=5)
         elif label:
 
             if (validate_num):
@@ -199,6 +200,11 @@ class Page1(Page):
         field = "Timer(Seconds)"
         l = LabelEntry(self, field, validate_num=True)
         l.entry.insert(0,str(INIT_SEC_IN_A_CHUKKER))
+        self.entries.append(l)
+
+        field = "Color"
+        color_options=["Red","Blue","Green"]
+        l = LabelEntry(self, field,  choices=color_options)
         self.entries.append(l)
 
 class Page2(Page):
