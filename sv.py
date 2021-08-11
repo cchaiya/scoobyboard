@@ -64,6 +64,7 @@ class LabelEntry(tk.Frame):
             drop =  tk.OptionMenu( self , c , *choices )
             drop.pack(side=tk.LEFT, fill=tk.X, padx=5)
             self.entry=drop
+            self.choice = c;
 
         elif label:
 
@@ -206,6 +207,7 @@ class Page1(Page):
         color_options=["Red","Blue","Green"]
         l = LabelEntry(self, field,  choices=color_options)
         self.entries.append(l)
+        self.color_choice = l.choice
 
 class Page2(Page):
 
@@ -351,6 +353,8 @@ class Page2(Page):
         self.timer_min = 0
         self.timer_sec = 0 
         self.timer_count= 0
+
+        self.color_choice = tk.StringVar()
     
         self.is_timer_running=False  ## timer is or is not running
     
@@ -415,6 +419,10 @@ class Page2(Page):
 
         strx = "%d:%02d"%(self.timer_min,self.timer_sec)
         self.timer.set(str(strx))
+
+
+        self.color_choice.set( p1.color_choice.get())
+        print ("color_choice = %s"%self.color_choice.get())
 
         self.bindKeys()
         self.focus_set()
