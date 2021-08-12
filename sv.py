@@ -204,6 +204,15 @@ class Page1(Page):
         elif(self.current_focus_index == HOME_LOGO_INDEX ):
             ind = self._nextLeftIndex(LOGO_OPTIONS, self.home_logo.get())
             self.home_logo.set(LOGO_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_BG_INDEX ):
+            ind = self._nextLeftIndex(BG_COLOR_OPTIONS, self.visitor_choice.get())
+            self.visitor_choice.set(BG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_FG_INDEX ):
+            ind = self._nextLeftIndex(FG_COLOR_OPTIONS, self.visitor_font_color.get())
+            self.visitor_font_color.set(FG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_LOGO_INDEX ):
+            ind = self._nextLeftIndex(LOGO_OPTIONS, self.visitor_logo.get())
+            self.visitor_logo.set(LOGO_OPTIONS[ind])
         else:
             print ("No choices")
 
@@ -225,6 +234,15 @@ class Page1(Page):
         elif(self.current_focus_index == HOME_LOGO_INDEX ):
             ind = self._nextRightIndex(LOGO_OPTIONS, self.home_logo.get())
             self.home_logo.set(LOGO_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_BG_INDEX ):
+            ind = self._nextRightIndex(BG_COLOR_OPTIONS, self.visitor_choice.get())
+            self.visitor_choice.set(BG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_FG_INDEX ):
+            ind = self._nextRightIndex(FG_COLOR_OPTIONS, self.visitor_font_color.get())
+            self.visitor_font_color.set(FG_COLOR_OPTIONS[ind])
+        elif(self.current_focus_index == VISITOR_LOGO_INDEX ):
+            ind = self._nextRightIndex(LOGO_OPTIONS, self.visitor_logo.get())
+            self.visitor_logo.set(LOGO_OPTIONS[ind])
         else:
             print ("No choices")
 
@@ -295,20 +313,17 @@ class Page1(Page):
         self.entries.append(l)
 
         field = "Visitor Background"
-        color_options=["Blue", "Red", "Black", "White", "Yellow", "Green", "Orange"]
-        l = LabelEntry(self, field, choices=color_options)
+        l = LabelEntry(self, field, choices=BG_COLOR_OPTIONS)
         self.entries.append(l)
         self.visitor_choice= l.choice
 
         field = "Visitor Font Color"
-        color_options=["Black", "White"]
-        l = LabelEntry(self, field, choices=color_options)
+        l = LabelEntry(self, field, choices=FG_COLOR_OPTIONS)
         self.entries.append(l)
         self.visitor_font_color = l.choice
 
         field = "Visitor Logo"
-        logo_options=["Poway 1", "Poway 2", "Lakeside"]
-        l = LabelEntry(self, field, choices=logo_options)
+        l = LabelEntry(self, field, choices=LOGO_OPTIONS)
         self.visitor_logo= l.choice
         self.entries.append(l)
 
